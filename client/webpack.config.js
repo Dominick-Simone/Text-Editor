@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
-const { InjectManifest } = require('workbox-webpack-plugin');
+const { InjectManifest, GenerateSW } = require('workbox-webpack-plugin');
 
 // TODO: Add and configure workbox plugins for a service worker and manifest file.
 // TODO: Add CSS loaders and babel to webpack.
@@ -13,41 +13,49 @@ module.exports = () => {
       main: './src/js/index.js',
       install: './src/js/install.js'
     },
+    devServer: {
+      hot: true,
+      static: './dist',
+      open: false,
+    },
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
       new HtmlWebpackPlugin({
+        title: 'JATE',
         template: './index.html',
-        title: 'TODOs List'
+      }),
+
+      new GenerateSW({
+        clientsClaim: true,
+        skipWaiting: true,
       }),
 
       new InjectManifest({
-        swsrc: '/src-sw.js'
+        swSrc: './src-sw.js',
+        swDest: 'src-sw.js'
       }),
 
       new WebpackPwaManifest({
         fingerprints: false,
         inject: true,
-        short_name: "Jate",
-        name: "Jate Text Editor",
+        name: 'Just Another Text Editor',
+        short_name: 'JATE',
+        description: 'A text editor that utilizes IndexDB',
+        background_color: '#7eb4e2',
+        theme_color: '#7eb4e2',
+        start_url: '/',
+        publicPath: '/',
         icons: [
           {
-            src: "/client/favicon.ico",
-            sizes: "48x48",
-            purpose: "any maskable"
-          }
+            src: path.resolve('src/images/logo.png'),
+            sizes: [96, 128, 192, 256, 384, 512],
+            destination: path.join('assets', 'icons'),
+          },
         ],
-        orientation: "portrait",
-        display: "standalone",
-        start_url: "/",
-        description: "Text Editor.",
-        background_color: '#225ca3',
-        theme_color: '#225ca3',
-        }
-        ),
-     
+      }),
     ],
 
     module: {
@@ -59,6 +67,7 @@ module.exports = () => {
         {
           test: /\.m?js$/,
           exclude: /node_modules/,
+          // We use babel-loader in order to use ES6.
           use: {
             loader: 'babel-loader',
             options: {
