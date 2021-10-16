@@ -28,20 +28,23 @@ module.exports = () => {
       }),
 
       new WebpackPwaManifest({
-        "short_name": "Jate",
-        "name": "Jate Text Editor",
-        "icons": [
+        fingerprints: false,
+        inject: true,
+        short_name: "Jate",
+        name: "Jate Text Editor",
+        icons: [
           {
-            "src": "/client/favicon.ico",
-            "sizes": "48x48",
-            "purpose": "any maskable"
+            src: "/client/favicon.ico",
+            sizes: "48x48",
+            purpose: "any maskable"
           }
         ],
-        "orientation": "portrait",
-        "display": "standalone",
-        "start_url": "/",
-        "description": "Text Editor.",
-        "theme_color": "#7eb4e2"
+        orientation: "portrait",
+        display: "standalone",
+        start_url: "/",
+        description: "Text Editor.",
+        background_color: '#225ca3',
+        theme_color: '#225ca3',
         }
         ),
      
